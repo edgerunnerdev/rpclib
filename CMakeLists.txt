@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.1)
+cmake_minimum_required(VERSION 3.15)
 project(rpc VERSION 2.3.0)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
@@ -50,6 +50,13 @@ endif()
 if(NOT ${RPCLIB_CXX_STANDARD} EQUAL 14 AND 
    NOT ${RPCLIB_CXX_STANDARD} EQUAL 11)
   message(fatal_error "Unsupported C++ standard: ${RPCLIB_CXX_STANDARD}")
+endif()
+
+# MSVC static runtime support
+# This must be set before a target is declared.
+if(MSVC AND RPCLIB_MSVC_STATIC_RUNTIME)
+  message(STATUS "MSVC -> forcing use of statically-linked runtime.")
+  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
 set(CMAKE_CXX_STANDARD ${RPCLIB_CXX_STANDARD})
